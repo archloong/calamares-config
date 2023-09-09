@@ -24,7 +24,7 @@ The examples are not exhaustive.
 
 */
 
-/* 
+/*
 
 EndeavourOS Calamares Theme
 
@@ -33,11 +33,11 @@ EndeavourOS Calamares Theme
 /* ########## MAIN APPLICATION WINDOW ########## */
 
 #mainApp {
-	background-color:#2a2e32;
+	background-color: #eae9e7;
 }
 
 #sidebarMenuApp {
-	background-image: url(/etc/calamares/branding/endeavouros/side-bar.png);
+	background-image: url(/etc/calamares/branding/archloong/side-bar.png);
 	background-color: #31363b;
 	padding-top: 0px;
 	background-position: center;
@@ -46,10 +46,10 @@ EndeavourOS Calamares Theme
 
 QWidget {
 	font: 12px;
-	color: #ffffff;
+	color: #000000;
 }
 
-QDialogButtonBox { 
+QDialogButtonBox {
 	dialogbuttonbox-buttons-have-icons: 0;
 }
 

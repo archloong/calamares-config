@@ -1,4 +1,4 @@
-componentName: endeavouros
+componentName: archloong
 
 welcomeStyleCalamares: false
 
@@ -16,19 +16,19 @@ sidebar: widget
 navigation: widget
 
 strings:
-    productName:         EndeavourOS
-    shortProductName:    EndeavourOS
+    productName:         ArchLinux
+    shortProductName:    ArchLinux
     version:             Cassini_nova
     shortVersion:        Cassini_nova
-    versionedName:       EndeavourOS
-    shortVersionedName:  EndeavourOS
-    bootloaderEntryName: EndeavourOS
-    
+    versionedName:       ArchLinux
+    shortVersionedName:  ArchLinux
+    bootloaderEntryName: ArchLinux
+
 images:
-    productLogo:         "endeavouros-icon.png"
-    productIcon:         "endeavouros-icon.png"
+    productLogo:         "icon.png"
+    productIcon:         "icon.png"
     productWelcome:      "opening-banner.jpg"
-    
+
 slideshowAPI: 2
 
 style:
@@ -43,5 +43,5 @@ slideshow:               "show.qml"
 
 uploadServer :
     type :    "fiche"
-    url :     "http://termbin.com:9999"
+    url :     "http://loongarchlinux.org:9999"
     sizeLimit : -1

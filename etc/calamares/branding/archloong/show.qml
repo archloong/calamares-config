@@ -27,6 +27,16 @@ Presentation
             fillMode: Image.PreserveAspectFit
             anchors.centerIn: parent
         }
+	Text {
+	  anchors.horizontalCenter: background_1.horizontalCenter
+	  anchors.top: background_1.bottom
+	  text: "Welcome to Manjaro.<br/>"+
+	  "Manjaro is driven by a hardworking and dedicated community.<br/>"+
+	  "During the installation, this slideshow will provide a quick introduction."
+	  wrapMode: Text.WordWrap
+	  width: 600
+	  horizontalAlignment: Text.Center
+	}
     }
 
     Slide {
@@ -50,7 +60,7 @@ Presentation
             anchors.centerIn: parent
         }
     }
-    
+
     Slide {
 
         Image {
@@ -61,7 +71,7 @@ Presentation
             anchors.centerIn: parent
         }
     }
-        
+
     Slide {
 
         Image {
@@ -77,7 +87,7 @@ Presentation
         console.log("QML Component (default slideshow) activated");
         presentation.currentSlide = 0;
     }
-    
+
     function onLeave() {
         console.log("QML Component (default slideshow) deactivated");
     }
