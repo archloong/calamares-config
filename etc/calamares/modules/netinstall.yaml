@@ -23,6 +23,9 @@
       packages:
         - xf86-video-amdgpu
         - xf86-video-ati
+        - xf86-video-fbdev
+        - xf86-video-loongson
+        - xf86-video-vesa
     - name: Network
       description: "Network apps drivers and tools"
       selected: true
@@ -47,10 +50,8 @@
       description: "Packages tools"
       selected: true
       packages:
-        - downgrade
         - pacman-contrib
         - pkgfile
-        - rebuild-detector
         - reflector
         - yay
     - name: "Desktop integration"
@@ -87,7 +88,7 @@
         - unzip
         - xz
     - name: Fonts
-      description: "EndeavourOS font selection"
+      description: "Font selection"
       selected: true
       packages:
         - adobe-source-han-sans-cn-fonts
@@ -96,10 +97,26 @@
         - cantarell-fonts
         - freetype2
         - noto-fonts
+        - open-chinese-fonts
         - ttf-bitstream-vera
         - ttf-dejavu
         - ttf-liberation
         - ttf-opensans
+        - wqy-bitmapfont
+        - wqy-microhei
+        - wqy-microhei-lite
+        - wqy-zenhei
+    - name: "Input Method"
+      description: "Multilingual Input Framework"
+      hidden: false
+      selected: true
+      critical: false
+      packages:
+        - fcitx5
+        - fcitx5-chinese-addons
+        - fcitx5-gtk
+        - fcitx5-qt
+        - fcitx5-rime
     - name: Audio
       description: "Audio handling tools apps and libs"
       selected: true
@@ -109,7 +126,6 @@
         - alsa-utils
         - pavucontrol
         - pipewire-pulse
-        - wireplumber
         - pipewire-alsa
         - pipewire-jack
         - rtkit
@@ -131,32 +147,11 @@
       packages:
         - power-profiles-daemon
         - upower
-    - name: "CPU specific microcode update packages"
-      description: "Microcode update image for AMD and Intel CPUs"
-      hidden: false
-      selected: true
-      critical: false
-      packages:
-        - amd-ucode
-        - intel-ucode
-- name: "EndeavourOS applications"
-  description: "EndeavourOS tools and applications"
-  selected: true
-  packages:
-    - endeavouros-theming
-    - eos-apps-info
-    - eos-log-tool
-    - eos-packagelist
-    - eos-quickstart
-    - eos-rankmirrors
-    - eos-update-notifier
-    - reflector-simple
-    - welcome
+
 - name: "Recommended applications selection"
   description: "General tools and applications"
   selected: true
   packages:
-    - duf
     - findutils
     - fsarchiver
     - git
@@ -173,31 +168,13 @@
     - sed
     - vi
     - wget
-- name: "Firefox and language package"
-  description: "Add firefox and language pack if possible"
+- name: "Browser"
+  description: "Chromium browser"
   hidden: false
   selected: true
   critical: false
   packages:
-    - firefox
-    - firefox-i18n-$LOCALE
-- name: Firewall
-  description: "Firewall installed and enabled"
-  selected: true
-  critical: true
-  packages:
-    - firewalld
-    - python-pyqt5
-    - python-capng
-- name: "LTS kernel in addition"
-  description: "Adding Long Term Supported kernel in addition to main one"
-  hidden: false
-  selected: false
-  expanded: false
-  critical: false
-  packages:
-    - linux-lts
-    - linux-lts-headers
+    - chromium
 - name: "Printing support"
   description: "Support for printing (Cups)"
   hidden: false
@@ -226,7 +203,6 @@
   selected: false
   critical: true
   packages:
-    - hplip
     - python-pyqt5
     - python-reportlab
     - xsane
