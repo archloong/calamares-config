@@ -91,9 +91,6 @@
       description: "Font selection"
       selected: true
       packages:
-        - adobe-source-han-sans-cn-fonts
-        - adobe-source-han-sans-jp-fonts
-        - adobe-source-han-sans-kr-fonts
         - cantarell-fonts
         - freetype2
         - noto-fonts
