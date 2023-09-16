@@ -65,40 +65,6 @@ _copy_files(){
         fi
     fi
 
-    # Communicate to chrooted system if
-    # - nvidia card is detected
-    # - livesession is running nvidia driver
-
-    local nvidia_file=$target/tmp/nvidia-info.bash
-    local card=no
-    local driver=no
-    local lspci="$(lspci -k)"
-    local latest_nvidia_series=495     # TODO: this number must be changed when Arch changes the Nvidia driver series number !!!
-
-    if [ -n "$(echo "$lspci" | grep -P 'VGA|3D|Display' | grep -w NVIDIA)" ] ; then
-        card=yes
-        [ -n "$(lsmod | grep -w nvidia)" ]                                                   && driver=yes
-        [ -n "$(echo "$lspci" | grep -wA2 NVIDIA | grep "Kernel driver in use: nvidia")" ]   && driver=yes
-        if [ "$driver" = "yes" ] ; then
-            _cleaner_msg info "using nvidia driver"
-        else
-            _cleaner_msg info "using nouveau driver"
-        fi
-    fi
-    echo "nvidia_card=$card"     >> $nvidia_file
-    echo "nvidia_driver=$driver" >> $nvidia_file
-
-    # copy extra drivers from /opt/extra-drivers to target's /opt/extra-drivers
-    if [ -n "$(/usr/bin/ls /opt/extra-drivers/*.zst 2>/dev/null)" ] ; then
-        _cleaner_msg info "copying extra drivers to target"
-        mkdir -p $target/opt/extra-drivers || _cleaner_msg warning "creating folder /opt/extra-drivers on target failed."
-        cp /opt/extra-drivers/*.zst $target/opt/extra-drivers/ || _cleaner_msg warning "copying drivers to /opt/extra-drivers on target failed."
-    fi
-    if [ -n "$(lsmod | grep r8168)" ] ; then
-        _cleaner_msg info "detected usage of r8168 driver"
-        touch $target/tmp/r8168_in_use
-    fi
-
     _manage_broadcom_wifi_driver
 }
 
@@ -146,20 +112,8 @@ Main() {
         _cleaner_msg "error" "cleaner_script.sh: new username is unknown!"
     fi
 
-    # If the Intel X driver was installed, also install it on the target
-    echo "Checking if Intel X11 driver is needed"
-    if [[ $(pacman -Q xf86-video-intel 2>/dev/null) ]] ; then
-		if [ -z ${INSTALL_TYPE} ] ; then
-			pacman -U --noconfirm --sysroot /tmp/$chroot_path /usr/share/packages/libxvmc*.zst --asdeps
-			pacman -U --noconfirm --sysroot /tmp/$chroot_path /usr/share/packages/xf86-video-intel*.zst
-		else
-			pacman -S --noconfirm --sysroot /tmp/$chroot_path xf86-video-intel
-		fi
-	fi
-
     # Copy any file from live environment to new system
     cp -f /etc/calamares/files/environment /tmp/$chroot_path/etc/environment
-    cp -n /usr/bin/device-info /tmp/$chroot_path/usr/bin/.
 
     _copy_files
 
