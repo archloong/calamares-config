@@ -88,14 +88,6 @@ _copy_files(){
     echo "nvidia_card=$card"     >> $nvidia_file
     echo "nvidia_driver=$driver" >> $nvidia_file
 
-    # copy user_commands.bash
-    _CopyFileToTarget /home/liveuser/user_commands.bash $target/tmp
-
-    # copy 30-touchpad.conf Xorg config file
-    _cleaner_msg info "copying 30-touchpad.conf to target"
-    mkdir -p $target/usr/share/X11/xorg.conf.d
-    cp /usr/share/X11/xorg.conf.d/30-touchpad.conf  $target/usr/share/X11/xorg.conf.d/
-
     # copy extra drivers from /opt/extra-drivers to target's /opt/extra-drivers
     if [ -n "$(/usr/bin/ls /opt/extra-drivers/*.zst 2>/dev/null)" ] ; then
         _cleaner_msg info "copying extra drivers to target"
@@ -108,17 +100,6 @@ _copy_files(){
     fi
 
     _manage_broadcom_wifi_driver
-
-    # copy endeavouros-release file
-    local file=/usr/lib/endeavouros-release
-    if [ -r $file ] ; then
-        if [ ! -r $target$file ] ; then
-            _cleaner_msg info "copying $file to target"
-            rsync -vaRI $file $target
-        fi
-    else
-        _cleaner_msg warning "$FUNCNAME: file $file does not exist in the ISO, copy to target failed!"
-    fi
 }
 
 Main() {
@@ -177,10 +158,8 @@ Main() {
 	fi
 
     # Copy any file from live environment to new system
-
     cp -f /etc/calamares/files/environment /tmp/$chroot_path/etc/environment
     cp -n /usr/bin/device-info /tmp/$chroot_path/usr/bin/.
-    cp -n /usr/bin/eos-connection-checker /tmp/$chroot_path/usr/bin/.
 
     _copy_files
 

@@ -65,6 +65,16 @@ _install_needed_packages() {
     fi
 }
 
+_set_im_method_env() {
+    if _is_pkg_installed "fcitx5" ; then
+        cat >> /etc/environment << EOF
+XMODIFIERS=@im=fcitx
+GTK_IM_MODULE=fcitx
+QT_IM_MODULE=fcitx
+SDL_IM_MODULE=fcitx
+EOF
+    fi
+}
 
 ##################################################################
 # Virtual machine stuff.
@@ -193,12 +203,10 @@ _clean_offline_packages(){
 
         ## Live iso specific
         arch-install-scripts
-        memtest86+
         mkinitcpio
         mkinitcpio-archiso
         mkinitcpio-busybox
         pv
-        syslinux
 
         ## Live iso tools
         clonezilla
@@ -207,17 +215,9 @@ _clean_offline_packages(){
         hdparm
 		partitionmanager
 
-        # ENDEAVOUROS REPO
-
-        ## General
-        rate-mirrors
-
         ## Calamares EndeavourOS
         $(pacman -Qq | grep calamares)        # finds calamares related packages
         ckbcomp
-
-        # arm qemu dependency
-        qemu-arm-aarch64-static-bin
     )
 
     pacman -Rsn --noconfirm "${packages_to_remove[@]}"
@@ -265,24 +265,6 @@ _remove_ucode(){
     _remove_a_pkg "$ucode"
 }
 
-_remove_other_graphics_drivers() {
-    local graphics="$(device-info --vga ; device-info --display)"
-    local amd=no
-
-    # remove AMD graphics driver if it is not needed
-    if [ -n "$(echo "$graphics" | grep "Advanced Micro Devices")" ] ; then
-        amd=yes
-    elif [ -n "$(echo "$graphics" | grep "AMD/ATI")" ] ; then
-        amd=yes
-    elif [ -n "$(echo "$graphics" | grep "Radeon")" ] ; then
-        amd=yes
-    fi
-    if [ "$amd" = "no" ] ; then
-        _remove_a_pkg xf86-video-amdgpu
-        _remove_a_pkg xf86-video-ati
-    fi
-}
-
 _remove_broadcom_wifi_driver_old() {
     local pkgname=broadcom-wl-dkms
     local wifi_pci
@@ -309,74 +291,11 @@ _remove_broadcom_wifi_driver() {
     fi
 }
 
-_install_extra_drivers_to_target() {
-    # Install special drivers to target if needed.
-    # The drivers exist on the ISO and were copied to the target.
-
-    local dir=/opt/extra-drivers
-    local pkg
-
-    # Handle the r8168 package.
-    if [ -r /tmp/r8168_in_use ] ; then
-        # We must install r8168 now.
-        if _is_offline_mode ; then
-            # Install using the copied r8168 package.
-            pkg="$(/usr/bin/ls -1 $dir/r8168-*-x86_64.pkg.tar.zst)"
-            if [ -n "$pkg" ] ; then
-                _pkg_msg install "r8168 (offline)"
-                pacman -U --noconfirm $pkg
-            else
-                _c_c_s_msg error "no r8168 package in folder $dir!"
-            fi
-        else
-            # Install r8168 package from the mirrors.
-            _install_needed_packages r8168
-        fi
-    fi
-}
-
 _install_more_firmware() {
     # Install possibly missing firmware packages based on detected hardware
 
     if [ -n "$(lspci -k | grep "Kernel driver in use: mwifiex_pcie")" ] ; then    # e.g. Microsoft Surface Pro
         _install_needed_packages linux-firmware-marvell
-    fi
-}
-
-_nvidia_remove() {
-    _pkg_msg remove "$*"
-    pacman -Rsc --noconfirm "$@"
-}
-
-_remove_nvidia_drivers() {
-    local remove="pacman -Rsc --noconfirm"
-
-    if _is_offline_mode ; then
-        # delete packages separately to avoid all failing if one fails
-        [ -r /usr/share/licenses/nvidia-dkms/LICENSE ]      && _nvidia_remove nvidia-dkms
-        [ -x /usr/bin/nvidia-modprobe ]                     && _nvidia_remove nvidia-utils
-        [ -x /usr/bin/nvidia-settings ]                     && _nvidia_remove nvidia-settings
-        [ -x /usr/bin/nvidia-inst ]                         && _nvidia_remove nvidia-inst
-        [ -r /usr/share/libalpm/hooks/eos-nvidia-fix.hook ] && _nvidia_remove nvidia-hook
-        true
-    fi
-}
-
-_manage_nvidia_packages() {
-    local file=/tmp/nvidia-info.bash        # nvidia info from livesession
-    local nvidia_card=""                    # these two variables are defined in $file
-    local nvidia_driver=""
-
-    if [ ! -r $file ] ; then
-        _c_c_s_msg warning "file $file does not exist!"
-        _remove_nvidia_drivers
-    else
-        source $file
-        if [ "$nvidia_driver" = "no" ] ; then
-            _remove_nvidia_drivers
-        elif [ "$nvidia_card" = "yes" ] ; then
-            _install_needed_packages nvidia-inst nvidia-hook nvidia-dkms
-        fi
     fi
 }
 
@@ -412,34 +331,15 @@ _misc_cleanups() {
 _clean_up(){
     local xx
 
-    # install or remove nvidia graphics stuff
-    _manage_nvidia_packages
-
-    # remove AMD and Intel graphics drivers if they are not needed
-    _remove_other_graphics_drivers
-
     # remove broadcom-wl-dkms if it is not needed
     _remove_broadcom_wifi_driver
 
-    _install_extra_drivers_to_target
     _install_more_firmware
 
     _misc_cleanups
 
-    # on the target, select file server based on country
-    xx=/usr/bin/eos-select-file-server
-    if [ -x $xx ] ; then
-        _c_c_s_msg info "running $xx"
-        local fileserver="$($xx)"
-        if [ "$fileserver" != "gitlab" ] ; then
-            _c_c_s_msg info "file server configured to '$fileserver'"
-        fi
-    else
-        _c_c_s_msg warning "program $xx was not found"
-    fi
-
     # change log file permissions
-    [ -r /var/log/Calamares.log ]         && chown root:root /var/log/Calamares.log
+    [ -r /var/log/Calamares.log ] && chown root:root /var/log/Calamares.log
 
     # run possible user-given commands
     _RunUserCommands
@@ -505,15 +405,12 @@ Main() {
     _clean_up
     _run_hotfix_end
     _show_info_about_installed_system
+    _set_im_method_env
 
     # Remove pacnew files
     find /etc -type f -name "*.pacnew" -exec rm {} \;
 
     rm -rf /etc/calamares /opt/extra-drivers
-
-    # Remove device-info & eos-connection-checker if they aren't installed
-    [[ $(pacman -Q eos-bash-shared  2</dev/null) ]] || rm /bin/device-info /bin/eos-connection-checker
-
     _c_c_s_msg info "$filename done."
 }
 
