@@ -19,67 +19,47 @@ Presentation
     }
 
     Slide {
-
-        Image {
-            id: background_1
-            source: "slide-welcome-easy-install.jpg"
-            width: 1002; height: 651
-            fillMode: Image.PreserveAspectFit
-            anchors.centerIn: parent
-        }
-	Text {
-	  anchors.horizontalCenter: background_1.horizontalCenter
-	  anchors.top: background_1.bottom
-	  text: "Welcome to Manjaro.<br/>"+
-	  "Manjaro is driven by a hardworking and dedicated community.<br/>"+
-	  "During the installation, this slideshow will provide a quick introduction."
-	  wrapMode: Text.WordWrap
-	  width: 600
-	  horizontalAlignment: Text.Center
-	}
-    }
-
-    Slide {
-
-        Image {
-            id: background_2
-            source: "slide-welcome-DE_s.jpg"
-            width: 1002; height: 651
-            fillMode: Image.PreserveAspectFit
-            anchors.centerIn: parent
+           anchors.fill: parent
+        Rectangle {
+            anchors.fill: parent
+            border.width: 0
+            color: "#2a2e32"
+            Image {
+                id: slide_trust
+                source: "slide-trust.png"
+                fillMode: Image.PreserveAspectFit
+                anchors.fill: parent
+            }
         }
     }
 
     Slide {
-
-        Image {
-            id: background_4
-            source: "slide-welcome-app.jpg"
-            width: 1002; height: 651
-            fillMode: Image.PreserveAspectFit
-            anchors.centerIn: parent
+           anchors.fill: parent
+        Rectangle {
+            anchors.fill: parent
+            border.width: 0
+            color: "#2a2e32"
+            Image {
+                id: slide_welcome_app
+                source: "slide-welcome-app.png"
+                fillMode: Image.PreserveAspectFit
+                anchors.fill: parent
+            }
         }
     }
 
     Slide {
-
-        Image {
-            id: background_5
-            source: "slide-discover.jpg"
-            width: 1002; height: 651
-            fillMode: Image.PreserveAspectFit
-            anchors.centerIn: parent
-        }
-    }
-
-    Slide {
-
-        Image {
-            id: background_6
-            source: "slide-trust.jpg"
-            width: 1002; height: 651
-            fillMode: Image.PreserveAspectFit
-            anchors.centerIn: parent
+            anchors.fill: parent
+        Rectangle {
+            anchors.fill: parent
+            border.width: 0
+            color: "#2a2e32"
+            Image {
+                id: slide_discover
+                source: "slide-discover.png"
+                fillMode: Image.PreserveAspectFit
+                anchors.fill: parent
+            }
         }
     }
 

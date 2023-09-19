@@ -27,7 +27,9 @@ strings:
 images:
     productLogo:         "icon.png"
     productIcon:         "icon.png"
-    productWelcome:      "opening-banner.jpg"
+    productWelcome:      "worldmap.png"
+    productBanner:       "release-name-logo.png"
+    #productWallpaper:    "wallpaper.png"
 
 slideshowAPI: 2
 
@@ -43,5 +45,5 @@ slideshow:               "show.qml"
 
 uploadServer :
     type :    "fiche"
-    url :     "http://loongarchlinux.org:9999"
+    url :     "http://termbin.com:9999"
     sizeLimit : -1

@@ -164,6 +164,7 @@
     - tldr
     - sed
     - vi
+    - vim
     - wget
 - name: "Browser"
   description: "Chromium browser"
